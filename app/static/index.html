@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentic Research Framework</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Marked.js para renderização de Markdown -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo">
+                <i data-lucide="bot" class="icon-accent"></i>
+                <h1>Agentic Research Framework</h1>
+            </div>
+            <p class="subtitle">Orquestração Multi-Agente Autônoma para Pesquisas Profundas</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="app-content">
+            <!-- Form Input -->
+            <section class="search-section glass-card">
+                <h2>Iniciar Nova Pesquisa</h2>
+                <p class="section-desc">Insira um tópico ou pergunta complexa. Os agentes se encarregarão de planejar, pesquisar na web, extrair informações e estruturar um relatório completo para você.</p>
+                <div class="input-group">
+                    <input type="text" id="query-input" placeholder="Ex: Compare a evolução do modelo de negócios do Slack vs Teams nos últimos 3 anos..." autocomplete="off">
+                    <button id="start-btn" class="btn-primary">
+                        <span>Iniciar Pesquisa</span>
+                        <i data-lucide="send"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Approval Section (Hidden initially) -->
+            <section id="approval-section" class="approval-section glass-card hidden">
+                <div class="approval-header">
+                    <h2>Aprovar Escopo de Pesquisa</h2>
+                    <p class="section-desc">O Planejador propôs os seguintes tópicos de busca. Você pode editar os tópicos diretamente, excluí-los ou adicionar novos tópicos de pesquisa personalizados.</p>
+                </div>
+                
+                <div id="sub-queries-editor" class="sub-queries-editor">
+                    <!-- Tópicos dinâmicos adicionados aqui -->
+                </div>
+                
+                <div class="approval-actions">
+                    <button id="add-query-btn" class="btn-secondary">
+                        <i data-lucide="plus"></i>
+                        <span>Adicionar Tópico</span>
+                    </button>
+                    <button id="approve-btn" class="btn-primary">
+                        <span>Aprovar e Iniciar Investigação</span>
+                        <i data-lucide="play"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Status & Logs Section (Hidden initially) -->
+            <section id="status-section" class="status-section glass-card hidden">
+                <div class="status-header">
+                    <h2>Status do Pipeline</h2>
+                    <div id="status-badge" class="badge">Aguardando...</div>
+                </div>
+
+                <!-- Progresso Visual -->
+                <div class="steps-progress">
+                    <div class="step" id="step-PLANNING">
+                        <div class="step-circle"><i data-lucide="compass"></i></div>
+                        <span class="step-label">Planejamento</span>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step" id="step-AWAITING_APPROVAL">
+                        <div class="step-circle"><i data-lucide="check-square"></i></div>
+                        <span class="step-label">Aprovação</span>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step" id="step-RESEARCHING">
+                        <div class="step-circle"><i data-lucide="search"></i></div>
+                        <span class="step-label">Investigação Web</span>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step" id="step-WRITING">
+                        <div class="step-circle"><i data-lucide="file-text"></i></div>
+                        <span class="step-label">Redação</span>
+                    </div>
+                </div>
+
+                <!-- Logs do Agente -->
+                <div class="logs-container">
+                    <div class="logs-header">
+                        <h3>Logs de Ativação do Agente</h3>
+                        <i data-lucide="terminal" class="icon-small"></i>
+                    </div>
+                    <div id="logs-terminal" class="terminal-view">
+                        <!-- Logs dinâmicos entram aqui -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Report Output (Hidden initially) -->
+            <section id="report-section" class="report-section glass-card hidden">
+                <div class="report-header">
+                    <h2>Relatório Executivo Gerado</h2>
+                    <div class="actions">
+                        <button id="copy-btn" class="btn-secondary" title="Copiar Markdown">
+                            <i data-lucide="copy"></i>
+                        </button>
+                        <button id="download-btn" class="btn-primary">
+                            <span>Baixar Relatório</span>
+                            <i data-lucide="download"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="report-body" class="markdown-body">
+                    <!-- Renderização do Relatório em HTML -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/static/app.js"></script>
+</body>
+</html>

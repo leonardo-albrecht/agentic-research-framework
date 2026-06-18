@@ -1,67 +1,67 @@
-# Agente com Memória
+# Agentic Research Framework
 
-Agente inteligente com memória de conversa e ferramentas reais, exposto via API REST.
+Orquestrador de pesquisa multi-agente assíncrono com ferramentas reais e interface interativa.
 
 ## O problema que resolve
-LLMs não têm memória nativa — cada chamada começa do zero.
-Este agente mantém histórico de conversa por sessão e executa
-ações reais no mundo (cotações, data/hora) antes de responder.
+Pesquisas detalhadas na web tomam muito tempo para abrir guias, filtrar anúncios, ler textos longos e sintetizar as descobertas.
+Este framework divide a busca em sub-tópicos, pesquisa de forma autônoma na internet (incluindo transcrições do YouTube) e consolida um relatório executivo final formatado em Markdown com fontes reais.
 
 ## Decisões de engenharia
 
-**Memória por sessão**
-Cada sessão tem seu próprio histórico isolado. Múltiplos
-usuários simultâneos não interferem entre si.
+**Orquestração Multi-Agente em Fases**
+O fluxo de trabalho é dividido em agentes especializados (Planner, Researcher e Writer) operando de forma assíncrona, o que otimiza o uso de contexto do LLM e garante relatórios de melhor qualidade.
 
-**ReAct pattern**
-O agente entra em loop: raciocina → age (tool) → observa → 
-raciocina de novo. Só responde ao usuário quando tem
-informação suficiente.
+**Human-in-the-Loop (Editor Interativo)**
+O pipeline pausa na fase de planejamento, abrindo um editor visual para que o usuário possa refinar, deletar ou adicionar novos tópicos antes que as buscas na internet comecem.
 
-**Tools como dicionário**
-O LLM retorna o nome da tool em JSON. O dicionário mapeia
-nome → função e executa dinamicamente — sem if/elif por tool.
+**Hot-Reload de Variáveis (.env)**
+O arquivo de configuração `.env` é recarregado a cada nova chamada. Isso permite atualizar ou corrigir sua chave `GROQ_API_KEY` na mesma hora, sem precisar reiniciar o servidor backend.
+
+**Banco de Dados Local (SQLite)**
+Os estados dos jobs (fila de tarefas), logs em tempo real do terminal e o conteúdo dos relatórios são mantidos salvos localmente.
 
 ## Stack
 - FastAPI
 - Groq (LLaMA 3.3 70B)
 - Python
+- SQLite
+- Scrapers (BeautifulSoup, DuckDuckGo Search, youtube-transcript-api)
 
 ## Como rodar
 
 ```bash
 pip install -r requirements.txt
-uvicorn app.main:app --reload
+python -m uvicorn app.main:app --port 8000
 ```
 
-Acesse: http://localhost:8000/docs
+Acesse a interface no navegador: http://localhost:8000
 
 ## Endpoints
 
 | Método | Rota | Descrição |
 |--------|------|-----------|
-| GET | /health | Status da API |
-| POST | /chat | Conversa com memória |
-| DELETE | /sessao/{id} | Limpa sessão |
+| POST | /api/research | Planeja a pesquisa inicial e retorna o `job_id` |
+| POST | /api/research/{job_id}/approve | Aprova e dispara as sub-queries de busca na web |
+| GET | /api/research/{job_id} | Consulta logs em tempo real, status e o relatório final |
 
 ## Exemplo de uso
 
 ```json
-POST /chat
+POST /api/research
 {
-  "sessao_id": "usuario_123",
-  "mensagem": "Qual a cotação do dólar agora?"
+  "query": "Evolução do modelo de negócios do Slack nos últimos anos"
 }
 
 Resposta:
 {
-  "resposta": "A cotação atual do dólar é R$ 5.01.",
-  "mensagens_no_historico": 5
+  "job_id": "c22fa968-3469-4100-85e7-4656ab9d9774",
+  "status": "PENDING"
 }
 ```
 
 ## Próximos passos
-- [ ] Adicionar mais tools (clima, notícias, busca web)
-- [ ] Persistência de sessões em banco de dados
-- [ ] Autenticação por usuário
-- [ ] Deploy com Docker
+- [ ] Integração com banco de dados vetorial para consulta de pesquisas anteriores
+- [ ] Botão de download do relatório final em PDF
+- [ ] Tradução automática de legendas do YouTube em outros idiomas
+- [ ] Containerização da aplicação com Docker
+
